@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
-import Person from './components/Person'
-import Form from './components/Form'
+import PersonForm from './components/PersonForm'
+import Filter from './components/Filter'
+import Persons from './components/Persons'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -11,15 +12,12 @@ const App = () => {
   ])
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
+  const [ newFilter, setNewFilter ] = useState('')
 
   const addPerson = (event)=>{
     event.preventDefault()
-    let alreadyExist = false
-    persons.forEach((person)=>{
-      if(person.name.localeCompare(newName)===0)
-      alreadyExist = true
-    })
-    if(newName && !alreadyExist){
+    const found = persons.some(person => person.name === newName);
+    if(newName && !found){
       const nameObject = {
         name : newName,
         number : newNumber
@@ -27,33 +25,27 @@ const App = () => {
       setPersons(persons.concat(nameObject))
     }
     else{
-      let message = alreadyExist ? `${newName} is already added to phonebook` : 'empty string not allowed'
+      let message = found ? `${newName} is already added to phonebook` : 'empty string not allowed'
       window.alert(message)
     }
     setNewName('')
     setNewNumber('')
   }
 
-  const handleNameChange = (event) => {
-    console.log(event.target.value)
-    setNewName(event.target.value)
-  }
+  const handleNameChange = (event)=>setNewName(event.target.value)
+  const handleNumberChange = (event)=>setNewNumber(event.target.value)
+  const handleFilterChange = (event)=>setNewFilter(event.target.value)
 
-  const handleNumberChange = (event) => {
-    console.log(event.target.value)
-    setNewNumber(event.target.value)
-  }
+  const containsFilter = (person)=> newFilter ? person.name.toLowerCase().includes(newFilter.toLowerCase()) : true
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <Form newName={newName} nameChangeHandler={handleNameChange} newNumber={newNumber} numberChangeHandler={handleNumberChange} onSubmitCallback={addPerson}/>
+      <Filter title='filter shown with' onChangeHandler={handleFilterChange} />
+      <h2>add a new</h2>
+      <PersonForm newName={newName} nameChangeHandler={handleNameChange} newNumber={newNumber} numberChangeHandler={handleNumberChange} onSubmitCallback={addPerson}/>
       <h2>Numbers</h2>
-      <ul>
-      {persons.map(person =>
-          <Person key={person.name} name={person.name} number={person.number} />
-        )}
-      </ul>
+      <Persons persons={persons} containsFilter={containsFilter} />
     </div>
   )
 }

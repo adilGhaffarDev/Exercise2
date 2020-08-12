@@ -1,6 +1,6 @@
 import React from 'react'
 import Input from './Input'
-const Form = (props) => {
+const PersonForm = (props) => {
   return (
   <div>
     <form onSubmit={props.onSubmitCallback}>
@@ -12,4 +12,4 @@ const Form = (props) => {
       </form>
   </div>
 )}
-export default Form
+export default PersonForm
