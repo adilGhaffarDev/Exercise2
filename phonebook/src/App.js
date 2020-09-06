@@ -37,6 +37,10 @@ const App = () => {
       setNotification(`Added ${newName}`)
       setTimeout(()=> setNotification(''), 3000)
     })
+    .catch(error => {
+      setError(error.response.data.error)
+      setTimeout(()=> setError(''), 3000)
+    })
     }
     else{
       if(found){
